@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>正截面弯矩曲率全曲线</title>
+  <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="row">
+      <h3 class="text-center" style="color: white">正截面弯矩曲率全曲线计算</h3>
+    </div>
+  </div>
+</nav>
+<div class="container" style="padding-top: 70px">
+  <div class="row">
+    <div class="col-xs-12 col-md-5">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label for="section-class" class="col-xs-2 control-label">类型</label>
+          <div class="col-xs-10">
+            <select class="form-control" id="section-class">
+              <option>矩形梁</option>
+              <option disabled="disabled">Ｔ形梁</option>
+              <option disabled>十字梁</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="param-b" class="col-xs-2 control-lable text-right" style="padding-top: 7px">b=</label>
+          <div class="col-xs-3"><input class="form-control" id="param-b" type="number"></div>
+          <p class="col-xs-2 form-control-static" style="padding-left: 0">mm</p>
+          <label for="param-h" class="col-xs-1 control-lable text-right" style="padding-top: 7px">h=</label>
+          <div class="col-xs-3"><input class="form-control" id="param-h" type="number"></div>
+          <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
+        </div>
+        <div class="form-group">
+          <label for="param-As" class="col-xs-2 control-lable text-right" style="padding-top: 7px">A<sub>s</sub>=</label>
+          <div class="col-xs-3"><input class="form-control" id="param-As" type="number"></div>
+          <p class="col-xs-2 form-control-static" style="padding-left: 0">mm<sup>2</sup></p>
+          <label for="param-As1" class="col-xs-1 control-lable text-right" style="padding-top: 7px">A<sub>s</sub>'=</label>
+          <div class="col-xs-3"><input class="form-control" id="param-As1" type="number" value="0"></div>
+          <p class="col-xs-1 form-control-static" style="padding-left: 0">mm<sup>2</sup></p>
+        </div>
+        <div class="form-group">
+          <label for="param-a" class="col-xs-2 control-lable text-right" style="padding-top: 7px">a=</label>
+          <div class="col-xs-3"><input class="form-control" id="param-a" type="number"></div>
+          <p class="col-xs-2 form-control-static" style="padding-left: 0">mm</p>
+          <label for="param-a1" class="col-xs-1 control-lable text-right" style="padding-top: 7px">a'=</label>
+          <div class="col-xs-3"><input class="form-control col-xs-3" id="param-a1" type="number" value="0"></div>
+          <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
+        </div>
+        <div class="form-group">
+          <label for="param-fc" class="col-xs-2 control-lable text-right" style="padding-top: 7px">混凝土</label>
+          <div class="col-xs-4">
+            <select class="form-control" id="param-fc">
+              <option>C15</option>
+              <option>C20</option>
+              <option>C25</option>
+              <option>C30</option>
+              <option>C35</option>
+              <option>C40</option>
+              <option>C45</option>
+              <option>C50</option>
+              <option>C55</option>
+              <option>C60</option>
+            </select>
+          </div>
+          <label for="param-fy" class="col-xs-2 control-lable text-right" style="padding-top: 7px">钢  筋</label>
+          <div class="col-xs-4">
+            <select class="form-control" id="param-fy">
+              <option>HPB300</option>
+              <option>HRB335</option>
+              <option>HRB400</option>
+              <option>HRB500</option>
+            </select>
+          </div>
+        </div>
+      </form>
+      <div class="row"><center><button type="button" class="btn btn-primary" id="go-btn" style="width: 94%">Go !</button></center></div>
+      <canvas id="section" style="height: 200px"></canvas>
+    </div>
+    <div class="col-xs-12 col-md-7">
+      <div id="curve" style="width: 100%; height: 500px"></div>
+    </div>
+  </div>
+</div>
+<script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="http://cdn.bootcss.com/canvasjs/1.7.0/canvasjs.min.js"></script>
+<script>
+var ConcreteData = {
+  C15: {fc: 10.0, epsilon0: 1370e-6, alphaa: 2.21, alphad: 0.41, ft: 1.40, epsilont0: 73.64e-6},
+  C20: {fc: 13.4, epsilon0: 1470e-6, alphaa: 2.15, alphad: 0.74, ft: 1.64, epsilont0: 82.12e-6},
+  C25: {fc: 16.7, epsilon0: 1560e-6, alphaa: 2.09, alphad: 1.06, ft: 1.85, epsilont0: 88.84e-6},
+  C30: {fc: 20.1, epsilon0: 1640e-6, alphaa: 2.03, alphad: 1.36, ft: 2.04, epsilont0: 95.24e-6},
+  C35: {fc: 23.4, epsilon0: 1720e-6, alphaa: 1.96, alphad: 1.65, ft: 2.23, epsilont0: 99.8e-6},
+  C40: {fc: 26.8, epsilon0: 1790e-6, alphaa: 1.90, alphad: 1.94, ft: 2.39, epsilont0: 104.36e-6},
+  C45: {fc: 29.6, epsilon0: 1850e-6, alphaa: 1.84, alphad: 2.21, ft: 2.52, epsilont0: 107.22e-6},
+  C50: {fc: 32.4, epsilon0: 1920e-6, alphaa: 1.78, alphad: 2.48, ft: 2.64, epsilont0: 110.08e-6},
+  C55: {fc: 35.5, epsilon0: 1980e-6, alphaa: 1.71, alphad: 2.74, ft: 2.75, epsilont0: 112.28e-6},
+  C60: {fc: 38.5, epsilon0: 2030e-6, alphaa: 1.65, alphad: 3.00, ft: 2.85, epsilont0: 114.7e-6}
+};
+var SteelData = {
+  HPB300: {fy: 300, Es: 2.10e5},
+  HRB335: {fy: 335, Es: 2.00e5},
+  HRB400: {fy: 400, Es: 2.00e5},
+  HRB500: {fy: 500, Es: 2.00e5}
+};
+
+var stripeNum = 10000;
+var forceLimit = 0.1;
+
+var b = 0;
+var h = 0;
+var As = 0;
+var As1 = 0;
+var a = 0;
+var a1 = 0;
+var cGrade;
+var sGrade;
+var concrete = {
+  fc: 0,
+  e0: 0,
+  aa: 0,
+  ad: 0,
+  ft: 0,
+  et0: 0
+};
+var steel = {
+  fy: 0,
+  Es: 0,
+  ey: 0
+};
+
+var chart;
+var dataPoints = [];
+var data = [{
+  type: "line",
+  dataPoints: dataPoints
+}];
+var lastAxis = 0.5;
+
+window.onload = function() {
+  initChart();
+}
+
+document.getElementById('go-btn').onclick = function(event) {
+  if (!setParam()) {
+    return;
+  }
+  setMaterial();
+  calcCurve();
+  // for (var i = 0; i < 6000; i = i + 1000) {
+  //   document.getElementById('debug').innerHTML += calcAxis(i * 1e-6) + "<br />";
+  //   dataPoints.push({x: i, y: calcAxis(i * 1e-6)});
+  // }
+  chart.render();
+}
+
+function setParam() {
+  b = parseInt(document.getElementById('param-b').value);
+  h = parseInt(document.getElementById('param-h').value);
+  As = parseInt(document.getElementById('param-As').value);
+  As1 = parseInt(document.getElementById('param-As1').value);
+  a = parseInt(document.getElementById('param-a').value);
+  a1 = parseInt(document.getElementById('param-a1').value);
+  cGrade = document.getElementById('param-fc').value;
+  sGrade = document.getElementById('param-fy').value;
+  if (!(b>=0 && h>=0 && !isNaN(As) && !isNaN(As1) && a>=0 && a1>=0)) {
+    alert('输入不正确，检查一下输入吧~');
+    return false;
+  }
+  return true;
+}
+
+function setMaterial() {
+  concrete.fc = ConcreteData[cGrade].fc;
+  concrete.e0 = ConcreteData[cGrade].epsilon0;
+  concrete.aa = ConcreteData[cGrade].alphaa;
+  concrete.ad = ConcreteData[cGrade].alphad;
+  concrete.ft = ConcreteData[cGrade].ft;
+  concrete.et0 = ConcreteData[cGrade].epsilont0;
+  steel.fy = SteelData[sGrade].fy;
+  steel.Es = SteelData[sGrade].Es;
+  steel.ey = steel.fy / steel.Es;
+}
+
+function initChart() {
+  chart = new CanvasJS.Chart("curve",
+    {
+      zoomEnabled: true,
+      animationEnabled: true,
+      axisX:{
+        labelFontSize: 12,
+        gridThickness: 1
+      },
+      axisY :{
+        includeZero: false,
+        labelFontSize: 12,
+        gridThickness: 1
+      },
+      data: data
+    }
+  );
+  chart.render();
+}
+
+function calcConcreteStress(strain) {
+  if (strain < -concrete.et0) {
+    return 0;
+  } else if (strain < 0) {
+    return -concrete.ft * (- 1.2 * strain / concrete.et0 - 0.2 * Math.pow(strain / concrete.et0, 6));
+  } else {
+    var x = strain / concrete.e0;
+    if (x < 1) {
+      return concrete.fc * (concrete.aa * x + (3 - 2 * concrete.aa) * x * x + (concrete.aa - 2) * x * x * x);
+    } else {
+      return concrete.fc * x / (concrete.ad * (x - 1) * (x - 1) + x);
+    }
+  }
+}
+
+function calcSteelStress(strain) {
+  epsilon = steel.fy / steel.Es;
+  if (strain < -epsilon) {
+    return -steel.fy;
+  } else if (strain < epsilon) {
+    return strain * steel.Es;
+  } else {
+    return steel.fy;
+  }
+}
+
+function calcCurve() {
+  dataPoints.length = 0;
+  lastAxis = 0.5;
+  for (var i = 0; i < 20000; i += 10) {
+    var axis = calcAxis(i * 1e-9);
+    if (axis > 0.6) {
+      break;
+    }
+    dataPoints.push({x: i, y: calcMoment(i * 1e-9, axis)/ 1e6});
+  }
+}
+
+function calcAxis(angle) {
+  var stripeHeight = h / stripeNum;
+  var force = 0;
+  force = calcForce(angle, lastAxis);
+
+  // document.getElementById('debug').innerHTML += lastAxis + "  " + force + "<br/>";
+  while (force > forceLimit || force < -forceLimit) {
+    lastAxis = nextAxis(angle, force);
+    force = calcForce(angle, lastAxis);
+    // document.getElementById('debug').innerHTML += lastAxis + "  " + force + "<br/>";
+  }
+  return lastAxis;
+}
+
+function calcForce(angle, axis) {
+  var stripeHeight = h / stripeNum;
+  var force = 0;
+  for (var i = 0; i < stripeNum; i = i + 1) {
+    force += b * stripeHeight * calcConcreteStress((h * lastAxis - (i + 0.5) * stripeHeight) * angle);
+  }
+  force -= As * calcSteelStress((h - a - h * lastAxis) * angle) + As1 * calcSteelStress((a1 - h * lastAxis) * angle);
+  return force;
+}
+
+function nextAxis(angle, force) {
+  var steelInfluence = 0;
+  if ((h - h * lastAxis - a) * angle < steel.ey) {
+    steelInfluence = steelInfluence + angle * As * steel.Es;
+  }
+  if ((h * lastAxis - a1) * angle < steel.ey) {
+    steelInfluence = steelInfluence + angle * As1 * steel.Es;
+  }
+  var x1 = force / (calcConcreteStress(h * lastAxis * angle) * b + steelInfluence)/ h;
+  var x2 = force / (calcConcreteStress(h * (lastAxis - x1) * angle) * b + steelInfluence)/ h;
+  lastAxis -= (x1 + x1)/ 2;
+  return lastAxis;
+}
+
+function calcMoment(angle, axis) {
+  var stripeHeight = h / stripeNum;
+  var moment = 0;
+  for (var i = 0; i < stripeNum; i++) {
+    moment += b * stripeHeight * calcConcreteStress((h * lastAxis - (i + 0.5) * stripeHeight) * angle) * ((i + 0.5) * stripeHeight);
+  };
+  moment -= As * calcSteelStress((h - a - h * lastAxis) * angle) * (h - a) + As1 * calcSteelStress((a1 - h * lastAxis) * angle) * a1;
+  return -moment;
+}
+</script>
+</body>
+</html>
