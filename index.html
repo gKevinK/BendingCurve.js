@@ -7,7 +7,7 @@
 	<title>正截面弯矩曲率全曲线</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="min-width: 420px">
+<body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="row">
@@ -93,7 +93,7 @@
               <option>C15</option>
               <option>C20</option>
               <option>C25</option>
-              <option>C30</option>
+              <option selected>C30</option>
               <option>C35</option>
               <option>C40</option>
               <option>C45</option>
@@ -113,17 +113,24 @@
           </div>
         </div>
       </form>
-      <div class="row"><button type="button" class="btn btn-primary" id="go-btn" style="width: 94%; margin: 0 auto">Go !</button></div>
+      <div class="row">
+        <button type="button" class="btn btn-primary" id="go-btn" style="width: 67%; margin-right: 2%">Go !</button>
+        <button type="button" class="btn btn-danger" id="clear-btn" style="width: 27%; margin-left: 2%" onclick="clearCharts()">清除曲线</button>
+      </div>
       <canvas id="section" style="height: 200px"></canvas>
     </div>
     <div class="col-xs-12 col-md-7">
-      <div id="curve" style="width: 100%; height: 500px"></div>
+      <div id="curve-container" style="width: 100%; height: 500px; position: relative;">
+        <button type="button" id="zoom-reset-btn" style="position: absolute; top: 10px; right: 10px" onclick="resetZoom()" title="重置视图">↺</button>
+        <canvas id="curve"></canvas>
+      </div>
     </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.bootcss.com/canvasjs/1.7.0/canvasjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
 <script>
 var ConcreteData = {
   C15: {fcm: 14.20, fck: 10.0, fc: 7.20, ftm: 1.98, ftk: 1.40, ft: 0.91},
@@ -193,12 +200,19 @@ function getB (x) {
   return width[i - 1].b;
 }
 
-var chart;
-var dataPoints = [];
-var data = [{
-  type: "line",
-  dataPoints: dataPoints
-}];
+var allCurveDatas = [];
+var colorPalette = [
+  'rgb(75, 192, 192)',
+  'rgb(255, 99, 132)',
+  'rgb(255, 159, 64)',
+  'rgb(255, 205, 86)',
+  'rgb(75, 250, 132)',
+  'rgb(54, 162, 235)',
+  'rgb(153, 102, 255)',
+  'rgb(201, 203, 207)'
+];
+var myChart;
+
 var lastAxis = 0.5;
 
 window.onload = function() {
@@ -234,9 +248,119 @@ document.getElementById('go-btn').onclick = function(event) {
     return;
   }
   setMaterial();
-  calcCurve();
-  data.push({type: "line", dataPoints: dataPoints});
-  chart.render();
+  var chartData = calcCurve();
+  allCurveDatas.push(chartData);
+
+  myChart.data.datasets = [];
+  for (var i = 0; i < allCurveDatas.length; i++) {
+    var colorIndex = i % colorPalette.length;
+    myChart.data.datasets.push({
+      label: '曲线' + (i + 1),
+      data: allCurveDatas[i],
+      borderColor: colorPalette[colorIndex],
+      backgroundColor: colorPalette[colorIndex] + '80',
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.3
+    });
+  }
+  myChart.update('auto');
+};
+
+function clearCharts() {
+  allCurveDatas = [];
+  myChart.data.datasets = [];
+  myChart.update('auto');
+}
+
+function resetZoom() {
+  if (myChart) {
+    myChart.resetZoom();
+  }
+}
+
+function initChart() {
+  const ctx = document.getElementById('curve').getContext('2d');
+
+  Chart.defaults.plugins.zoom.pan.momentumDuration = 0;
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: []
+    },
+    options: {
+      responsive: true,
+      animation: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
+      plugins: {
+        zoom: {
+          pan: {
+            enabled: true,
+            mode: 'xy',
+            modifierKey: null
+          },
+          zoom: {
+            enabled: true,
+            mode: 'xy',
+            wheel: {
+              enabled: true
+            },
+            pinch: {
+              enabled: true
+            },
+            drag: {
+              enabled: false
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return '曲率：' + context.parsed.x.toFixed(2) + ', 弯矩：' + context.parsed.y.toFixed(2) + ' kN·m';
+            }
+          }
+        },
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            filter: function(item, chart) {
+              return item.index < 8;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: '曲率 (×10⁻⁶ /mm)',
+            font: { size: 14 }
+          },
+          ticks: {
+            font: { size: 12 }
+          }
+        },
+        y: {
+          beginAtZero: false,
+          title: {
+            display: true,
+            text: '弯矩 (kN·m)',
+            font: { size: 14 }
+          },
+          ticks: {
+            font: { size: 12 }
+          }
+        }
+      }
+    }
+  });
 }
 
 function setParam() {
@@ -299,27 +423,6 @@ function setMaterial() {
   steel.ey = steel.fy / steel.Es;
 }
 
-function initChart() {
-  chart = new CanvasJS.Chart("curve",
-    {
-      zoomEnabled: true,
-      animationEnabled: true,
-      axisX:{
-        labelFontSize: 12,
-        gridThickness: 1,
-        minimum: 0,
-      },
-      axisY :{
-        includeZero: false,
-        labelFontSize: 12,
-        gridThickness: 1
-      },
-      data: data
-    }
-  );
-  chart.render();
-}
-
 function calcConcreteStress(strain) {
   if (strain < -concrete.et0) {
     return 0;
@@ -354,8 +457,9 @@ function calcCurve() {
     if (axis * h * i * 1e-9 > 0.0033) {
       break;
     }
-    dataPoints.push({x: i, y: calcMoment(i * 1e-9, axis)/ 1e6});
+    dataPoints.push({x: i * 1e-3, y: calcMoment(i * 1e-9, axis) / 1e6});
   }
+  return dataPoints;
 }
 
 function calcAxis(angle) {
