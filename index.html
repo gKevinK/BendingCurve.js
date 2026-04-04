@@ -11,7 +11,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="row">
-      <h3 class="text-center" style="color: white">正截面弯矩曲率全曲线计算</h3>
+      <h3 class="text-center" style="color: white">混凝土梁正截面弯矩曲率全曲线计算</h3>
     </div>
   </div>
 </nav>
@@ -25,11 +25,9 @@
             <select class="form-control" id="section-class" onchange="setParamPanel()">
               <option>矩形梁</option>
               <option>Ｔ形梁</option>
-              <option disabled>工字梁</option>
-              <option disabled>十字梁</option>
             </select>
           </div>
-          <label for="value-class" class="col-xs-2 control-lable text-right" style="padding-top: 7px">使用</label>
+          <label for="value-class" class="col-xs-2 control-label text-right" style="padding-top: 7px">使用</label>
           <div class="col-xs-4">
             <select class="form-control" id="value-class">
               <option>平均值</option>
@@ -39,55 +37,55 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="param-b" class="col-xs-2 control-lable text-right" style="padding-top: 7px">b =</label>
+          <label for="param-b" class="col-xs-2 control-label text-right" style="padding-top: 7px">b =</label>
           <div class="col-xs-3"><input class="form-control" id="param-b" type="number" value="200"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
-          <label for="param-h" class="col-xs-2 control-lable text-right" style="padding-top: 7px">h =</label>
+          <label for="param-h" class="col-xs-2 control-label text-right" style="padding-top: 7px">h =</label>
           <div class="col-xs-3"><input class="form-control" id="param-h" type="number" value="500"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
         </div>
         <div class="form-group" id="T-param" hidden>
-          <label for="param-bf" class="col-xs-2 control-lable text-right" style="padding-top: 7px">b<sub>f</sub>'=</label>
+          <label for="param-bf" class="col-xs-2 control-label text-right" style="padding-top: 7px">b<sub>f</sub>'=</label>
           <div class="col-xs-3"><input class="form-control" id="param-bf" type="number" value="600"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
           <div class="col-xs-1"></div>
-          <label for="param-hf" class="col-xs-1 control-lable text-right" style="padding-top: 7px">h<sub>f</sub>'=</label>
+          <label for="param-hf" class="col-xs-1 control-label text-right" style="padding-top: 7px">h<sub>f</sub>'=</label>
           <div class="col-xs-3"><input class="form-control" id="param-hf" type="number" value="100"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
         </div>
         <div class="form-group">
-          <label for="param-As" class="col-xs-2 control-lable text-right" style="padding-top: 7px">A<sub>s</sub>=</label>
+          <label for="param-As" class="col-xs-2 control-label text-right" style="padding-top: 7px">A<sub>s</sub>=</label>
           <div class="col-xs-3"><input class="form-control" id="param-As" type="number"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm<sup>2</sup></p>
           <button type="button" class="btn col-xs-1" onclick="switchAsPanel()"><span class="glyphicon glyphicon-menu-down"></span></button>
-          <label for="param-As1" class="col-xs-1 control-lable text-right" style="padding-top: 7px">A<sub>s</sub>'=</label>
+          <label for="param-As1" class="col-xs-1 control-label text-right" style="padding-top: 7px">A<sub>s</sub>'=</label>
           <div class="col-xs-3"><input class="form-control" id="param-As1" type="number" value="0"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm<sup>2</sup></p>
         </div>
         <div class="form-group well" id="param-As-calc" hidden>
-          <label for="param-As-n" class="col-xs-3 control-lable text-right" style="padding-top: 7px">As Num</label>
+          <label for="param-As-n" class="col-xs-3 control-label text-right" style="padding-top: 7px">As Num</label>
           <div class="col-xs-3"><input class="form-control" id="param-As-n" type="number" value="0" onchange="setAs()"></div>
-          <label for="param-As-phi" class="col-xs-1 control-lable text-right" style="padding-top: 7px">Φ=</label>
+          <label for="param-As-phi" class="col-xs-1 control-label text-right" style="padding-top: 7px">Φ=</label>
           <div class="col-xs-3"><input class="form-control" id="param-As-phi" type="number" value="0" onchange="setAs()"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
           <button type="button" class="btn col-xs-1" onclick="switchAsPanel()"><span class="glyphicon glyphicon-menu-up"></span></button>
-          <label for="param-As1-n" class="col-xs-3 control-lable text-right" style="padding-top: 7px">As' Num</label>
+          <label for="param-As1-n" class="col-xs-3 control-label text-right" style="padding-top: 7px">As' Num</label>
           <div class="col-xs-3"><input class="form-control" id="param-As1-n" type="number" value="0" onchange="setAs1()"></div>
-          <label for="param-As1-phi" class="col-xs-1 control-lable text-right" style="padding-top: 7px">Φ=</label>
+          <label for="param-As1-phi" class="col-xs-1 control-label text-right" style="padding-top: 7px">Φ=</label>
           <div class="col-xs-3"><input class="form-control" id="param-As1-phi" type="number" value="0" onchange="setAs1()"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
         </div>
         <div class="form-group">
-          <label for="param-a" class="col-xs-2 control-lable text-right" style="padding-top: 7px">a =</label>
+          <label for="param-a" class="col-xs-2 control-label text-right" style="padding-top: 7px">a =</label>
           <div class="col-xs-3"><input class="form-control" id="param-a" type="number" value="25"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
           <div class="col-xs-1"></div>
-          <label for="param-a1" class="col-xs-1 control-lable text-right" style="padding-top: 7px">a'=</label>
+          <label for="param-a1" class="col-xs-1 control-label text-right" style="padding-top: 7px">a'=</label>
           <div class="col-xs-3"><input class="form-control col-xs-3" id="param-a1" type="number" value="25"></div>
           <p class="col-xs-1 form-control-static" style="padding-left: 0">mm</p>
         </div>
         <div class="form-group">
-          <label for="param-fc" class="col-xs-2 control-lable text-right" style="padding-top: 7px; padding-right: 0px">混凝土</label>
+          <label for="param-fc" class="col-xs-2 control-label text-right" style="padding-top: 7px; padding-right: 0px">混凝土</label>
           <div class="col-xs-4">
             <select class="form-control" id="param-fc">
               <option>C15</option>
@@ -102,7 +100,7 @@
               <option>C60</option>
             </select>
           </div>
-          <label for="param-fy" class="col-xs-2 control-lable text-right" style="padding-top: 7px; padding-right: 0px">钢 筋</label>
+          <label for="param-fy" class="col-xs-2 control-label text-right" style="padding-top: 7px; padding-right: 0px">钢 筋</label>
           <div class="col-xs-4">
             <select class="form-control" id="param-fy">
               <option>300</option>
@@ -127,10 +125,9 @@
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0"></script>
 <script>
 var ConcreteData = {
   C15: {fcm: 14.20, fck: 10.0, fc: 7.20, ftm: 1.98, ftk: 1.40, ft: 0.91},
@@ -283,7 +280,6 @@ function resetZoom() {
 function initChart() {
   const ctx = document.getElementById('curve').getContext('2d');
 
-  Chart.defaults.plugins.zoom.pan.momentumDuration = 0;
   myChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -300,8 +296,7 @@ function initChart() {
         zoom: {
           pan: {
             enabled: true,
-            mode: 'xy',
-            modifierKey: null
+            mode: 'xy'
           },
           zoom: {
             enabled: true,
@@ -311,9 +306,6 @@ function initChart() {
             },
             pinch: {
               enabled: true
-            },
-            drag: {
-              enabled: false
             }
           }
         },
@@ -343,9 +335,7 @@ function initChart() {
             text: '曲率 (×10⁻⁶ /mm)',
             font: { size: 14 }
           },
-          ticks: {
-            font: { size: 12 }
-          }
+          ticks: {}
         },
         y: {
           beginAtZero: false,
@@ -354,9 +344,7 @@ function initChart() {
             text: '弯矩 (kN·m)',
             font: { size: 14 }
           },
-          ticks: {
-            font: { size: 12 }
-          }
+          ticks: {}
         }
       }
     }
@@ -364,31 +352,52 @@ function initChart() {
 }
 
 function setParam() {
-  b = parseInt(document.getElementById('param-b').value);
-  h = parseInt(document.getElementById('param-h').value);
-  As = parseInt(document.getElementById('param-As').value);
-  As1 = parseInt(document.getElementById('param-As1').value);
-  a = parseInt(document.getElementById('param-a').value);
-  a1 = parseInt(document.getElementById('param-a1').value);
+  const sectionClass = document.getElementById('section-class').value;
+
+  const bVal = parseInt(document.getElementById('param-b').value);
+  const hVal = parseInt(document.getElementById('param-h').value);
+  const AsVal = parseFloat(document.getElementById('param-As').value) || 0;
+  const As1Val = parseFloat(document.getElementById('param-As1').value) || 0;
+
+  if (isNaN(bVal) || isNaN(hVal) || bVal <= 0 || hVal <= 0) {
+    alert('梁截面尺寸必须大于 0，请检查输入！');
+    return false;
+  }
+  const aVal = parseInt(document.getElementById('param-a').value);
+  const a1Val = parseInt(document.getElementById('param-a1').value);
+  if (isNaN(aVal) || isNaN(a1Val) || aVal < 0 || a1Val < 0) {
+    alert('保护层厚度不能为负数，请检查输入！');
+    return false;
+  }
+  b = bVal;
+  h = hVal;
+  As = AsVal;
+  As1 = As1Val;
+  a = aVal;
+  a1 = a1Val;
   cGrade = document.getElementById('param-fc').value;
   sGrade = document.getElementById('param-fy').value;
-    section = document.getElementById('section-class').value;
-  if (section === "矩形梁") {
+  if (sectionClass === "矩形梁") {
     width.length = 0;
     width.push({x: 0, b: b});
-  }
-  if (section === "Ｔ形梁") {
-    bf = parseInt(document.getElementById('param-bf').value);
-    hf = parseInt(document.getElementById('param-hf').value);
-    if (!(bf>=b && hf>0)) {
-      alert('输入不正确，检查一下输入吧~');
+  } else if (sectionClass === "T 形梁") {
+    const bfVal = parseInt(document.getElementById('param-bf').value);
+    const hfVal = parseFloat(document.getElementById('param-hf').value);
+    if (isNaN(bfVal) || isNaN(hfVal) || bfVal <= 0 || hfVal <= 0) {
+      alert('T 形梁翼缘尺寸必须大于 0，请检查输入！');
       return false;
     }
+    if (bfVal < b) {
+      alert('翼缘宽度 bf 不能小于腹板宽度 b，请检查输入！');
+      return false;
+    }
+    bf = bfVal;
+    hf = hfVal;
     width.length = 0;
     width.push({x: 0, b: bf});
     width.push({x: hf, b: b});
   }
-  if (!(b>=0 && h>=0 && !isNaN(As) && !isNaN(As1) && a>=0 && a1>=0)) {
+  if (!(b >= 0 && h > 0 && a >= 0 && a1 >= 0)) {
     alert('输入不正确，检查一下输入吧~');
     return false;
   }
@@ -439,7 +448,7 @@ function calcConcreteStress(strain) {
 }
 
 function calcSteelStress(strain) {
-  epsilon = steel.fy / steel.Es;
+  const epsilon = steel.fy / steel.Es;
   if (strain < -epsilon) {
     return -steel.fy;
   } else if (strain < epsilon) {
@@ -518,9 +527,9 @@ function calcMoment(angle, axis) {
       moment += getB(i * stripeHeight) * calcConcreteStress((h * axis - i * stripeHeight) * angle) * (concrete.et0 / angle + h * axis - i * stripeHeight) * ((i + 0.5) * stripeHeight);
       break;
     }
-    moment += getB(i * stripeHeight) * stripeHeight * calcConcreteStress((h * lastAxis - (i + 0.5) * stripeHeight) * angle) * ((i + 0.5) * stripeHeight);
+    moment += getB(i * stripeHeight) * stripeHeight * calcConcreteStress((h * axis - (i + 0.5) * stripeHeight) * angle) * ((i + 0.5) * stripeHeight);
   };
-  moment -= As * calcSteelStress((h - a - h * lastAxis) * angle) * (h - a) + As1 * calcSteelStress((a1 - h * lastAxis) * angle) * a1;
+  moment -= As * calcSteelStress((h - a - h * axis) * angle) * (h - a) + As1 * calcSteelStress((a1 - h * axis) * angle) * a1;
   return -moment;
 }
 </script>
